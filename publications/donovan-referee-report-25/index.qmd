@@ -7,6 +7,7 @@ pub-authors: "Donovan, V. M. & **Weidig, N. C.**"
 pub-doi: "10.21956/OPENRESEUROPE.21420.R53295"
 pub-url: "https://open-research-europe.ec.europa.eu/articles/4-131/v3#referee-response-53295"
 pub-listed: "yes"
+pub-oa: true
 ---
 
 ::: {.nw-cite-meta}
