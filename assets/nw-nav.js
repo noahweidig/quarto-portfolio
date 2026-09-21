@@ -67,7 +67,7 @@ window.nwSitePath = function () {
       }
     }
   }
-  var src = script && script.src;
+  var src = script?.src;
   if (!src) return "";
   try {
     return new URL(src, location.href).pathname.replace(/\/assets\/nw-nav\.js$/, "");
