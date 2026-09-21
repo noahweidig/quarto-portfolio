@@ -8,7 +8,7 @@
  *
  *   node --experimental-strip-types scripts/optimize-output.ts
  *
- * Six jobs, all things Quarto has no setting for:
+ * Seven jobs, all things Quarto has no setting for:
  *
  *  1. Intrinsic image dimensions. Markdown figures (`![alt](shot.webp)`) and
  *     EJS listing templates emit <img> without width/height, so the browser
@@ -70,6 +70,12 @@
  *     a sitemap full of non-canonical duplicates wastes crawl budget and
  *     muddies which URL Google picks, so rewrite it to match.
  *
+ *  7. Base path prefixing. Every hand-written root-absolute href/src/action
+ *     (nav, footer, favicons, the compiled theme CSS's font/topography
+ *     `url(...)`) assumes the site sits at its domain's root, which stops
+ *     being true whenever `site-url` in _quarto.yml names a subpath instead.
+ *     A no-op when it doesn't.
+ *
  * Only the rendered output is touched — nothing under the project source.
  */
 
@@ -77,7 +83,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { outputDir, walkHtml } from "./site-output.ts";
+import { basePath, outputDir, walkHtml } from "./site-output.ts";
 
 // ------------------------------------------------------- image dimensions
 
@@ -522,6 +528,89 @@ function deferAlternateStyles(html: string): string {
   return out.slice(0, head) + THEME_MEDIA_SCRIPT + out.slice(head);
 }
 
+// ------------------------------------------------------ base path prefix
+
+/**
+ * Prefix a root-absolute internal URL with the site's deploy path. Left
+ * alone: protocol-relative (`//cdn…`), already prefixed, or anything that
+ * isn't a bare absolute path (an external absolute URL never starts with a
+ * lone `/`).
+ */
+function withBasePath(value: string): string {
+  if (!value.startsWith("/") || value.startsWith("//")) return value;
+  if (value === basePath || value.startsWith(`${basePath}/`)) return value;
+  return `${basePath}${value}`;
+}
+
+/**
+ * Every hand-written root-absolute href/src/action/srcset in the rendered
+ * HTML (nav, footer, favicons, the og-cards/JSON-LD scripts) assumes the site
+ * sits at its domain's root. When `site-url` names a subpath instead (see
+ * site-output.ts's `basePath` — this repo has been renamed and re-homed more
+ * than once, #278), those references need the same prefix or they 404 once
+ * the page is actually served from under it. Quarto's own generated links
+ * (nav, search, breadcrumbs) are relative already and pass through untouched.
+ */
+function applyBasePath(html: string): string {
+  if (!basePath) return html;
+  let out = html.replace(/\s(href|src|action)="([^"]*)"/g, (whole, name: string, value: string) => {
+    const rewritten = withBasePath(value);
+    return rewritten === value ? whole : ` ${name}="${rewritten}"`;
+  });
+  out = out.replace(/\ssrcset="([^"]*)"/g, (whole, value: string) => {
+    const rewritten = value
+      .split(",")
+      .map((candidate) => {
+        const trimmed = candidate.trim();
+        const [url, descriptor] = trimmed.split(/\s+/, 2);
+        const next = withBasePath(url);
+        return descriptor ? `${next} ${descriptor}` : next;
+      })
+      .join(", ");
+    return rewritten === value ? whole : ` srcset="${rewritten}"`;
+  });
+  return out;
+}
+
+/** Every `.css` file anywhere under `dir`, including `site_libs` — unlike
+ *  walkHtml, which skips it because it holds no pages. */
+function* walkCss(dir: string): Generator<string> {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      yield* walkCss(full);
+    } else if (entry.name.endsWith(".css")) {
+      yield full;
+    }
+  }
+}
+
+/**
+ * Quarto compiles assets/theme.scss's root-absolute font and topography-svg
+ * `url(...)` references straight into the bundled theme CSS under
+ * `site_libs/bootstrap/`. Same fix as applyBasePath, applied to CSS text
+ * instead of HTML attributes.
+ */
+function rewriteCssBasePaths(): number {
+  if (!basePath) return 0;
+  let touched = 0;
+  for (const file of walkCss(outputDir)) {
+    const css = fs.readFileSync(file, "utf8");
+    const next = css.replace(
+      /url\((['"]?)(\/[^'")]+)\1\)/g,
+      (whole, quote: string, value: string) => {
+        const rewritten = withBasePath(value);
+        return rewritten === value ? whole : `url(${quote}${rewritten}${quote})`;
+      },
+    );
+    if (next !== css) {
+      fs.writeFileSync(file, next);
+      touched++;
+    }
+  }
+  return touched;
+}
+
 // ------------------------------------------------------- rocket loader
 
 /**
@@ -694,8 +783,9 @@ function main(): void {
     const scripted = deferSiteLibs(themed);
     if (scripted !== themed) deferredScripts++;
     const guarded = dropRocketLoaderReplay(scripted);
-    // Last: every script the steps above may have added is stamped too.
-    const next = optOutRocketLoader(guarded);
+    const rocketed = optOutRocketLoader(guarded);
+    // Last: prefixes every root-absolute reference the steps above wrote too.
+    const next = applyBasePath(rocketed);
     if (next !== html) {
       fs.writeFileSync(file, next);
       pages++;
@@ -714,6 +804,9 @@ function main(): void {
   console.log(`[optimize] site_libs scripts deferred on ${deferredScripts} page(s)`);
   checkHomeSrcset(stats.responsive);
   console.log(`[optimize] sitemap.xml: ${normalizeSitemap()} URL(s) normalised to canonical form`);
+  if (basePath) {
+    console.log(`[optimize] ${rewriteCssBasePaths()} CSS file(s) prefixed with "${basePath}"`);
+  }
 }
 
 main();

@@ -28,7 +28,6 @@ project:
     - scripts/generate-og.ts
     - scripts/optimize-output.ts
   resources:
-    - CNAME
     - robots.txt
     - favicon.ico
     - favicon.svg
@@ -66,7 +65,7 @@ filters:
 website:
   title: "Noah Weidig"
   description: "Noah is an ecologist and GIS analyst specializing in geospatial data science, environmental modeling, and large-scale spatial analysis."
-  site-url: "https://noahweidig.com/"
+  site-url: "https://noahweidig.com/quarto-portfolio/"
   llms-txt: true
   # Cookieless GA4: `storage: none` stops gtag from writing _ga/_ga_* cookies,
   # so no ePrivacy/GDPR consent banner is required. Returning visitors are no
@@ -282,10 +281,10 @@ format:
             "@graph": [
               {
                 "@type": "Person",
-                "@id": "https://noahweidig.com/#person",
+                "@id": "https://noahweidig.com/quarto-portfolio/#person",
                 "name": "Noah Weidig",
-                "url": "https://noahweidig.com/",
-                "image": "https://noahweidig.com/assets/media/authors/me.webp",
+                "url": "https://noahweidig.com/quarto-portfolio/",
+                "image": "https://noahweidig.com/quarto-portfolio/assets/media/authors/me.webp",
                 "jobTitle": "GIS Analyst & Data Scientist",
                 "email": "mailto:noah@noahweidig.com",
                 "alumniOf": [
@@ -302,11 +301,11 @@ format:
               },
               {
                 "@type": "WebSite",
-                "@id": "https://noahweidig.com/#website",
-                "url": "https://noahweidig.com/",
+                "@id": "https://noahweidig.com/quarto-portfolio/#website",
+                "url": "https://noahweidig.com/quarto-portfolio/",
                 "name": "Noah Weidig",
                 "description": "Noah Weidig is an ecologist and GIS analyst specializing in geospatial data science, environmental modeling, and large-scale spatial analysis.",
-                "publisher": { "@id": "https://noahweidig.com/#person" }
+                "publisher": { "@id": "https://noahweidig.com/quarto-portfolio/#person" }
               }
             ]
           }

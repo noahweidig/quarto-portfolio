@@ -21,6 +21,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  basePath,
   type Destination,
   escapeHtml,
   navDestinations,
@@ -75,7 +76,7 @@ function card(destination: Destination): string {
   const icon = chrome?.icon ?? GENERIC_ICON;
   const blurb = chrome?.blurb ? `\n        <p>${escapeHtml(chrome.blurb)}</p>` : "";
   return [
-    `      <a class="nw-start-card" href="${url}">`,
+    `      <a class="nw-start-card" href="${basePath}${url}">`,
     `        <span class="nw-start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg></span>`,
     `        <h2>${label}</h2>${blurb}`,
     `        <span class="nw-start-link">Go to this section &#8594;</span>`,

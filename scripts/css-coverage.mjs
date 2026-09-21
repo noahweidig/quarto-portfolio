@@ -3,7 +3,7 @@
 //
 //   node scripts/css-coverage.mjs                  # ./_site, read off disk
 //   node scripts/css-coverage.mjs --dir _site
-//   node scripts/css-coverage.mjs --base https://noahweidig.com
+//   node scripts/css-coverage.mjs --base https://noahweidig.com/quarto-portfolio
 //   node scripts/css-coverage.mjs --budget 40      # fail under 40% used
 //
 // Advisory by default (#267): with ~5,100 lines of hand-written CSS and no

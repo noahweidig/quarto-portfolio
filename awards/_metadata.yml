@@ -2,7 +2,7 @@
 # page in this directory; the site home page and 404 are intentionally excluded.
 share:
   # Fallback only; assets/social-share.js rewrites this to the live page URL.
-  permalink: "https://noahweidig.com/"
+  permalink: "https://noahweidig.com/quarto-portfolio/"
   twitter: true
   linkedin: true
   bsky: true

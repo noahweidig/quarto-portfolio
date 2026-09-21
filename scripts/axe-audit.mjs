@@ -2,7 +2,7 @@
 //
 //   node scripts/axe-audit.mjs                     # ./_site, read off disk
 //   node scripts/axe-audit.mjs --dir _site
-//   node scripts/axe-audit.mjs --base https://noahweidig.com
+//   node scripts/axe-audit.mjs --base https://noahweidig.com/quarto-portfolio
 //
 // Lived in a heredoc inside .github/workflows/axe.yml until #249/#256: as a
 // file it can run locally (`npm run a11y`), it can point at production for

@@ -28,6 +28,26 @@ export const outputDir: string = process.env.QUARTO_PROJECT_OUTPUT_DIR
   : path.join(projectRoot, "_site");
 
 /**
+ * The site's deploy path, read from `site-url` in _quarto.yml — `""` when the
+ * site sits at its domain's root, or e.g. `/quarto-portfolio` when it is
+ * served from a subpath (as this repo has been renamed and re-homed a few
+ * times now, see #278). Every hand-written root-absolute href/src in the
+ * project (nav, footer, favicons, the compiled theme CSS) has to carry this
+ * prefix, and reading it from one place here means the next rename only
+ * touches `site-url`.
+ */
+export const basePath: string = (() => {
+  const yml = fs.readFileSync(path.join(projectRoot, "_quarto.yml"), "utf8");
+  const m = /^\s*site-url:\s*["']?([^"'\s]+)/m.exec(yml);
+  if (!m) return "";
+  try {
+    return new URL(m[1]).pathname.replace(/\/+$/, "");
+  } catch {
+    return "";
+  }
+})();
+
+/**
  * Every rendered page under `dir`, depth first. Quarto's own asset bundles
  * (`site_libs/`) and per-document resource folders (`*_files/`) hold library
  * HTML that is never a page, so they are skipped.
