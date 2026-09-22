@@ -51,6 +51,43 @@ window.nwReducedMotion = function () {
   return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 };
 
+// The section-matching regexes below key off `location.pathname` starting
+// with e.g. "/blog/", which only holds when the site sits at its domain's
+// root. Deriving the deploy path from this very script's own URL — rather
+// than hard-coding it — means it keeps working through the next rename too
+// (see scripts/site-output.ts's `basePath`, the same fix on the build side).
+window.nwSitePath = function () {
+  var script = document.currentScript;
+  if (!script) {
+    var scripts = document.getElementsByTagName("script");
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      if (/\/nw-nav\.js(?:[?#]|$)/.test(scripts[i].src)) {
+        script = scripts[i];
+        break;
+      }
+    }
+  }
+  var src = script?.src;
+  if (!src) return "";
+  try {
+    return new URL(src, location.href).pathname.replace(/\/assets\/nw-nav\.js$/, "");
+  } catch {
+    return "";
+  }
+};
+
+// A pathname with the site's deploy path (if any) stripped off, so the
+// section-matching regexes below can stay anchored to "/blog/" etc.
+// regardless of where the site is actually served from.
+window.nwStripSitePath = function (pathname) {
+  var base = window.nwSitePath();
+  return base && pathname.indexOf(base) === 0 ? pathname.slice(base.length) || "/" : pathname;
+};
+
+window.nwPagePath = function () {
+  return window.nwStripSitePath(location.pathname);
+};
+
 // scripts/optimize-output.ts parks the alternate (dark) stylesheets behind
 // `media="not all"` so they don't block first paint in light mode, and a
 // pre-paint script in <head> re-arms them for visitors who load straight into
@@ -152,7 +189,7 @@ document.addEventListener(
 // Blog detail pages get a scroll-linked reading-progress bar. The bar and its
 // animation are entirely CSS (see "reading progress bar" in site.css) — all
 // that is needed here is the hook to scope them to article pages.
-if (/^\/blog\/[^/]+\//.test(location.pathname)) {
+if (/^\/blog\/[^/]+\//.test(window.nwPagePath())) {
   document.documentElement.classList.add("nw-post-page");
 }
 
@@ -201,7 +238,7 @@ if (/^\/blog\/[^/]+\//.test(location.pathname)) {
   // side. One rule, and it holds in both directions — forward into a detail
   // page and back out of one.
   function tag(otherPath) {
-    var el = DETAIL.test(location.pathname) ? detailImage() : cardImage(otherPath);
+    var el = DETAIL.test(window.nwPagePath()) ? detailImage() : cardImage(otherPath);
     if (el) el.style.viewTransitionName = NAME;
     return el;
   }
@@ -220,7 +257,8 @@ if (/^\/blog\/[^/]+\//.test(location.pathname)) {
     // Only the listing↔detail pair morphs. Anything else (nav links, the CV)
     // keeps the plain page cross-fade.
     var path = pathOf(to);
-    if (!path || (!DETAIL.test(path) && !DETAIL.test(location.pathname))) return;
+    if (!path || (!DETAIL.test(window.nwStripSitePath(path)) && !DETAIL.test(window.nwPagePath())))
+      return;
     tag(path);
   });
 
@@ -232,7 +270,8 @@ if (/^\/blog\/[^/]+\//.test(location.pathname)) {
       window.navigation.activation.from &&
       window.navigation.activation.from.url;
     var path = pathOf(from);
-    if (!path || (!DETAIL.test(path) && !DETAIL.test(location.pathname))) return;
+    if (!path || (!DETAIL.test(window.nwStripSitePath(path)) && !DETAIL.test(window.nwPagePath())))
+      return;
     var el = tag(path);
     if (!el) return;
     e.viewTransition.finished
@@ -249,12 +288,12 @@ if (/^\/blog\/[^/]+\//.test(location.pathname)) {
 // asynchronously after fetching listings.json, so retarget on every DOM
 // change to the title block rather than just once at load.
 (function () {
-  var m = location.pathname.match(/^\/(projects|publications|awards|blog)\//);
+  var m = window.nwPagePath().match(/^\/(projects|publications|awards|blog)\//);
   if (!m) return;
   var retarget = function () {
     document.querySelectorAll(".quarto-title .quarto-category").forEach(function (el) {
       var cat = el.textContent.trim();
-      var href = "/" + m[1] + "/#category=" + encodeURIComponent(cat);
+      var href = window.nwSitePath() + "/" + m[1] + "/#category=" + encodeURIComponent(cat);
       var parent = el.closest("a");
       if (parent) parent.href = href;
       el.querySelectorAll("a").forEach(function (a) {
@@ -439,7 +478,7 @@ document.addEventListener(
 // abstract, used for SEO/share meta) also renders as the visible subtitle,
 // duplicating the "Abstract" section further down the page. Drop it.
 (function () {
-  if (!/^\/publications\/[^/]+\/(index\.html)?$/.test(location.pathname)) return;
+  if (!/^\/publications\/[^/]+\/(index\.html)?$/.test(window.nwPagePath())) return;
   var sub = document.querySelector("#title-block-header .subtitle");
   if (sub) sub.remove();
 })();

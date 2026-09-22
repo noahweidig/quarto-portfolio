@@ -4,7 +4,7 @@
 
 This repository is the source for my personal website, a static
 [Quarto](https://quarto.org) site published at
-[noahweidig.com](https://noahweidig.com). It ships no releases and no versioned
+[noahweidig.com/quarto-portfolio](https://noahweidig.com/quarto-portfolio/). It ships no releases and no versioned
 artifacts, so there is nothing to support on a per-version basis: only the
 currently deployed site and the current `main` branch are in scope.
 
@@ -17,7 +17,7 @@ those providers directly.
 
 Please report privately rather than opening a public issue:
 
-- **Preferred:** [open a private security advisory](https://github.com/noahweidig/noahweidig.github.io/security/advisories/new)
+- **Preferred:** [open a private security advisory](https://github.com/noahweidig/quarto-portfolio/security/advisories/new)
   on this repository's Security tab.
 - **Alternative:** email <noah@noahweidig.com>.
 

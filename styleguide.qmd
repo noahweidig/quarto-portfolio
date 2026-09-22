@@ -7,7 +7,7 @@ toc: false
 ---
 
 Every design primitive the site is built from, rendered from the live
-`--nw-*` custom properties in [`assets/_tokens.scss`](https://github.com/noahweidig/noahweidig.github.io/blob/main/assets/_tokens.scss)
+`--nw-*` custom properties in [`assets/_tokens.scss`](https://github.com/noahweidig/quarto-portfolio/blob/main/assets/_tokens.scss)
 — so this page can't drift from the stylesheet: change a token and everything
 below changes with it. Contrast ratios are computed in your browser against
 the current theme's surfaces; use the navbar toggle to audit the other theme.

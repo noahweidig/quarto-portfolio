@@ -6,13 +6,13 @@
 </p>
 
 <p align="center">
-  <a href="https://noahweidig.com"><b>noahweidig.com</b></a>
+  <a href="https://noahweidig.com/quarto-portfolio/"><b>noahweidig.com/quarto-portfolio</b></a>
   &nbsp;•&nbsp;
-  <a href="https://noahweidig.com/projects">Projects</a>
+  <a href="https://noahweidig.com/quarto-portfolio/projects">Projects</a>
   &nbsp;•&nbsp;
-  <a href="https://noahweidig.com/publications">Publications</a>
+  <a href="https://noahweidig.com/quarto-portfolio/publications">Publications</a>
   &nbsp;•&nbsp;
-  <a href="https://noahweidig.com/blog">Blog</a>
+  <a href="https://noahweidig.com/quarto-portfolio/blog">Blog</a>
   &nbsp;•&nbsp;
   <a href="mailto:noah@noahweidig.com">noah@noahweidig.com</a>
 </p>
@@ -41,7 +41,7 @@ Currently a **GIS & Remote Sensing Research Associate** at the University of Flo
 
 Actively seeking **Data Scientist** or **GIS Analyst** roles.
 
-📄 [Download Resume](https://noahweidig.com/uploads/resume.pdf)
+📄 [Download Resume](https://noahweidig.com/quarto-portfolio/uploads/resume.pdf)
 
 ### Where the content lives
 
@@ -50,15 +50,15 @@ Quarto from the front matter in this repo, so the site is always the current
 version of them. This README used to keep a second, hand-typed copy of each
 one; those copies drifted, so they are now links (#252):
 
-|                 |                                       |
-| --------------- | ------------------------------------- |
-| Projects        | <https://noahweidig.com/projects>     |
-| Publications    | <https://noahweidig.com/publications> |
-| Experience      | <https://noahweidig.com/experience>   |
-| Education       | <https://noahweidig.com/education>    |
-| Awards & grants | <https://noahweidig.com/awards>       |
-| CV              | <https://noahweidig.com/cv>           |
-| Writing         | <https://noahweidig.com/blog>         |
+|                 |                                                        |
+| --------------- | ------------------------------------------------------ |
+| Projects        | <https://noahweidig.com/quarto-portfolio/projects>     |
+| Publications    | <https://noahweidig.com/quarto-portfolio/publications> |
+| Experience      | <https://noahweidig.com/quarto-portfolio/experience>   |
+| Education       | <https://noahweidig.com/quarto-portfolio/education>    |
+| Awards & grants | <https://noahweidig.com/quarto-portfolio/awards>       |
+| CV              | <https://noahweidig.com/quarto-portfolio/cv>           |
+| Writing         | <https://noahweidig.com/quarto-portfolio/blog>         |
 
 ---
 
@@ -85,7 +85,7 @@ Publications under `publications/` are regenerated from Zotero on the **1st and 
 npm install                    # build tooling (not needed for a plain render)
 npm run preview                # local dev server
 npm run build                  # build to _site/
-npm run a11y                   # axe-core over _site (or --base https://noahweidig.com)
+npm run a11y                   # axe-core over _site (or --base https://noahweidig.com/quarto-portfolio)
 npm run validate:html          # html-validate over _site
 npm run globe                  # redraw the homepage globe SVG
 npm run lint                   # eslint + stylelint + prettier --check + prose over the sources
@@ -108,7 +108,7 @@ The prose is checked the same way (#250). `npm run lint:prose` runs
 button label, and a short list of filler phrases and exclamation marks — over
 the `.qmd` sources, skipping fenced code and inline code so R's `colour =`
 argument stays correct. Its house style lives in `prose.config.json` and is
-written down for readers on [`/styleguide`](https://noahweidig.com/styleguide.html);
+written down for readers on [`/styleguide`](https://noahweidig.com/quarto-portfolio/styleguide.html);
 `cspell` (`cspell.json`) catches the typos a rule list cannot.
 
 ### Continuous integration

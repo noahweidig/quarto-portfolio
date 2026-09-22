@@ -5,7 +5,7 @@
 // rather than only per-PR snapshots (#256).
 const { ASSERTIONS } = require("./lighthouserc.js");
 
-const SITE = process.env.SITE_URL || "https://noahweidig.com";
+const SITE = process.env.SITE_URL || "https://noahweidig.com/quarto-portfolio";
 
 module.exports = {
   ci: {

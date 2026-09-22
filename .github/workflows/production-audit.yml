@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 env:
-  SITE_URL: https://noahweidig.com
+  SITE_URL: https://noahweidig.com/quarto-portfolio
 
 jobs:
   lighthouse:

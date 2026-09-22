@@ -35,9 +35,16 @@ jobs:
           # (original-ufdc.uflib.ufl.edu) serves the linked PDF fine in a
           # browser but resets CI's connection, and returns 403 to anything
           # that is not one.
+          # `--remap` undoes the `/quarto-portfolio` prefix `--root-dir`
+          # would otherwise bake into every absolute link's resolved path:
+          # the site's own hrefs carry it (see scripts/site-output.ts's
+          # `basePath`, for the real GitHub Pages URL), but `_site` on disk
+          # here has no such subdirectory. Matches the already-resolved
+          # `file://` URI, since lychee applies `--root-dir` before `--remap`.
           args: >-
             --no-progress
             --root-dir ${{ github.workspace }}/_site
+            --remap '^file://${{ github.workspace }}/_site/quarto-portfolio(/.*)?$ file://${{ github.workspace }}/_site$1'
             --accept '100..=103,200..=299,403,405,415,429,999'
             --exclude 'ecos\.fws\.gov'
             --exclude 'victoriamdonovan\.org'
