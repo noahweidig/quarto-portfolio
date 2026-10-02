@@ -26,7 +26,7 @@
     "cspell": "^10.3.5",
     "eslint": "10.11.0",
     "globals": "17.12.0",
-    "html-validate": "11.16.0",
+    "html-validate": "11.16.1",
     "postcss-scss": "4.0.9",
     "prettier": "3.9.9",
     "puppeteer": "25.11.0",
